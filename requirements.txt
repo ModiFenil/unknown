@@ -1,0 +1,8 @@
+Flask
+PyMySQL
+python-dotenv
+Werkzeug
+cryptography
+reportlab
+Flask-APScheduler
+
