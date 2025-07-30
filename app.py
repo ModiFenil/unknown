@@ -423,9 +423,10 @@ def add_user():
         department = request.form['department'].strip()
         location = request.form['location'].strip()
         designation = request.form['designation'].strip()
-        
+        joining_date = request.form['date_of_joining'].strip()
+
         # Validation
-        if not all([firstname, lastname, email, password, role, gender, phone, department, location, designation]):
+        if not all([firstname, lastname, email, password, role, gender, phone, department, location, designation, joining_date]):
             return render_template('add_user.html', 
                                  error="All fields are required", 
                                  roles=get_roles())
@@ -456,9 +457,9 @@ def add_user():
                 # Insert new user
                 cursor.execute("""
                     INSERT INTO t_users_hr 
-                    (firstname, lastname, email, password, role, gender, is_active, phone, department, location, designation) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (firstname, lastname, email, hashed_password, role, gender, 1, phone, department, location, designation))
+                    (firstname, lastname, email, password, role, gender, is_active, phone, department, location, designation,joining_date) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (firstname, lastname, email, hashed_password, role, gender, 1, phone, department, location, designation,joining_date))
                 
                 return render_template('add_user.html', 
                                      success=f"User {firstname} {lastname} added successfully!", 
