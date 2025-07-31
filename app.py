@@ -10,8 +10,9 @@ import csv
 import calendar
 from flask_apscheduler import APScheduler
 
+
 # Initialize scheduler at module level
-scheduler = APScheduler()
+scheduler = APScheduler()   
 
 def create_app(config_name=None):
     app = Flask(__name__)
@@ -41,6 +42,12 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor,
         autocommit=True
     )
+
+    # Set database session to IST - this will handle most timing issues
+    with conn.cursor() as cursor:
+        cursor.execute("SET time_zone = '+05:30'")
+    
+    return conn
 
 # SHA256 password hashing functions
 def hash_password(password):
