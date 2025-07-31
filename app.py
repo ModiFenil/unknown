@@ -798,8 +798,9 @@ def inject_current_year():
         'ist_date': get_ist_date()
     }
 
+# At the end of your app.py file
 if __name__ == '__main__':
-     try:
+    try:
         conn = get_db_connection()
         print("✅ Connected to the MySQL database.")
         print(f"📊 Database: {app.config['MYSQL_DB']}")
@@ -808,20 +809,18 @@ if __name__ == '__main__':
     except Exception as e:
         print("❌ Database connection error:", e)
     
-    # Get port from environment or use default
-    # port = int(os.environ.get('PORT', 5000))
-    # host = os.environ.get('HOST', '127.0.0.1')
-    port = int(os.environ.get('PORT', 5000))
-    host = os.environ.get('HOST', '0.0.0.0')
+    # Render.com uses PORT environment variable
+    port = int(os.environ.get('PORT', 10000))  # Render default is 10000
+    host = '0.0.0.0'  # Always use 0.0.0.0 for Render
     
     print(f"🚀 Starting Flask app on {host}:{port}")
-    print(f"🔧 Debug mode: {app.config['DEBUG']}")
-    print(f"🌍 Environment: {os.environ.get('FLASK_ENV', 'development')}")
+    print(f"🔧 Debug mode: {app.config.get('DEBUG', False)}")
+    print(f"🌍 Environment: {os.environ.get('FLASK_ENV', 'production')}")
     
-    # Start scheduler only once and before app.run()
-    if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
-        scheduler.start()
-        print("📅 Scheduler started - Auto-checkout will run at 23:59:59 daily")
+    # Start scheduler in production
+    with app.app_context():
+        if not scheduler.running:
+            scheduler.start()
+            print("📅 Scheduler started - Auto-checkout will run at 23:59:59 IST daily")
     
-    app.run(debug=app.config['DEBUG'], port=port, host=host)
-
+    app.run(debug=False, port=port, host=host)  # Debug should be False in production
