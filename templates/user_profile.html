@@ -122,7 +122,7 @@
       <img src="{{ url_for('static', filename='uploads/profile_images/' + user.user_profile_image) }}" 
            alt="User Avatar" class="profile-avatar" id="profileImage" />
     {% else %}
-      <img src="{% if user.gender == 'male' %}{{ url_for('static', filename='images/male.png') }}{% elif user.gender == 'female' %}{{ url_for('static', filename='images/female.jpg') }}{% else %}{{ url_for('static', filename='avatars/default.png') }}{% endif %}" 
+      <img src="{% if user.gender == 'male' %}{{ url_for('static', filename='images/male.png') }}{% elif user.gender == 'female' %}{{ url_for('static', filename='images/female.png') }}{% else %}{{ url_for('static', filename='avatars/default.png') }}{% endif %}" 
            alt="User Avatar" class="profile-avatar" id="profileImage" />
     {% endif %}
     

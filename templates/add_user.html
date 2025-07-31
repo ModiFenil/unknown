@@ -136,14 +136,14 @@
             </div>
             <div class="mb-4">
                 <label for="location" class="form-label required-field">Location</label>
-                <input type="text" id="location" name="location" class="form-control form-control-lg" placeholder="Enter location of a person e.g. Ahmedabad, Hydrabad" required autofocus />
+                <input type="text" id="location" name="location" class="form-control form-control-lg" placeholder="Enter location of person e.g. Ahmedabad, Hyderabad" required />
             </div>
             <div class="mb-4">
                 <label for="role" class="form-label required-field">Role</label>
                 <select id="role" name="role" class="form-select form-select-lg" required>
                     <option value="" disabled selected>Select Role</option>
                     {% for r in roles %}
-                      <option value="{{ r.role }}">{{ r.role_name | capitalize }}</option>
+                        <option value="{{ r.role }}">{{ r.role_name | capitalize }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -155,19 +155,29 @@
                     <option value="female">Female</option>
                 </select>
             </div>
+
+            <!-- Department Dropdown -->
             <div class="mb-4">
                 <label for="department" class="form-label required-field">Department</label>
                 <select id="department" name="department" class="form-select form-select-lg" required>
                     <option value="" disabled selected>Select Department</option>
-                    <option value="Tech">Tech</option>
-                    <option value="Operations">Operations</option>
+                    <option value="Strategy & Growth">Strategy & Growth</option>
+                    <option value="Tech Team">Tech Team</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Business Development">Business Development</option>
+                    <option value="Operation & Claims">Operation & Claims</option>
+                    <option value="Medical Team">Medical Team</option>
                 </select>
             </div>
+
+            <!-- Designation Dropdown -->
             <div class="mb-4">
                 <label for="designation" class="form-label required-field">Designation</label>
-                <input type="text" id="designation" name="designation" class="form-control form-control-lg" placeholder="Enter designation" required autofocus />
+                <select id="designation" name="designation" class="form-select form-select-lg" required disabled>
+                    <option value="" disabled selected>Select Designation</option>
+                </select>
             </div>
-            <!-- Add this block inside your form where you want the date field to appear -->
+
             <div class="mb-4">
                 <label for="date_of_joining" class="form-label required-field">Date of Joining</label>
                 <input type="date" id="date_of_joining" name="date_of_joining" class="form-control form-control-lg" required />
@@ -186,5 +196,70 @@
 
     <!-- Bootstrap 5 JS Bundle (with Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+
+    <script>
+        const departmentToDesignations = {
+            "Strategy & Growth": [
+                "Head of Growth & Strategy"
+            ],
+            "Tech Team": [
+                "Junior Software Developer",
+                "Intern - Tech"
+            ],
+            "Finance": [
+                "Head of the Finance",
+                "Finance Intern",
+                "Accounts Analyst"
+            ],
+            "Business Development": [
+                "Operation & Business Development Manager",
+                "Business Development Manager",
+                "Regional Business head",
+                "Regional Sales Head",
+                "Sales & Claim Operations"
+            ],
+            "Operation & Claims": [
+                "Operation Incharge",
+                "PA to founder Office",
+                "Relationship manager",
+                "Field Executive",
+                "Claim Co-Ordinator",
+                "Claim & Operation Incharge",
+                "Head of Operations",
+                "Claim Operations & Collection Processor",
+                "Sales Executive",
+                "TPA Insurance Coordinator",
+                "Claims and Operations"
+            ],
+            "Medical Team": [
+                "Senior Medical Officer"
+            ]
+        };
+
+        const departmentSelect = document.getElementById('department');
+        const designationSelect = document.getElementById('designation');
+
+        departmentSelect.addEventListener('change', function() {
+            const department = this.value;
+            const designations = departmentToDesignations[department] || [];
+
+            // Clear previous designations
+            designationSelect.innerHTML = '<option value="" disabled selected>Select Designation</option>';
+
+            // Populate designations
+            designations.forEach(function(designation) {
+                const option = document.createElement('option');
+                option.value = designation;
+                option.textContent = designation;
+                designationSelect.appendChild(option);
+            });
+
+            // Enable or disable based on availability
+            designationSelect.disabled = designations.length === 0;
+        });
+
+        // Initially disable designation dropdown
+        designationSelect.disabled = true;
+    </script>
 </body>
 </html>

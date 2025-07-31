@@ -435,12 +435,7 @@ def add_user():
             return render_template('add_user.html', 
                                  error="Invalid gender selection", 
                                  roles=get_roles())
-        
-        if department not in ['Tech', 'Operations']:
-            return render_template('add_user.html', 
-                                 error="Invalid department selection", 
-                                 roles=get_roles())
-        
+                
         conn = get_db_connection()
         try:
             with conn.cursor() as cursor:
@@ -1161,6 +1156,10 @@ def test_db():
         return f"✅ Database connection successful! Result: {result}"
     except Exception as e:
         return f"❌ Database connection FAILED: {e}"
+
+@app.route('/test_health')
+def test_health():
+    return "✅ App is running fine!", 200
 
 # Error handlers
 @app.errorhandler(404)
