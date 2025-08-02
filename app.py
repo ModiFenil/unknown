@@ -52,21 +52,44 @@ def create_app(config_name=None):
 
 app = create_app()
 
-def get_db_connection():
-    conn = pymysql.connect(
-        host=app.config['MYSQL_HOST'],
-        user=app.config['MYSQL_USER'],
-        password=app.config['MYSQL_PASSWORD'],
-        db=app.config['MYSQL_DB'],
-        cursorclass=pymysql.cursors.DictCursor,
-        autocommit=True
-    )
+# def get_db_connection():
+#     conn = pymysql.connect(
+#         host=app.config['MYSQL_HOST'],
+#         user=app.config['MYSQL_USER'],
+#         password=app.config['MYSQL_PASSWORD'],
+#         db=app.config['MYSQL_DB'],
+#         cursorclass=pymysql.cursors.DictCursor,
+#         autocommit=True
+#     )
     
-    # Set database session to IST
-    with conn.cursor() as cursor:
-        cursor.execute("SET time_zone = '+05:30'")
+#     # Set database session to IST
+#     with conn.cursor() as cursor:
+#         cursor.execute("SET time_zone = '+05:30'")
     
-    return conn
+#     return conn
+
+def get_db_connection(max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            conn = pymysql.connect(
+                host=app.config['MYSQL_HOST'],
+                user=app.config['MYSQL_USER'],
+                password=app.config['MYSQL_PASSWORD'],
+                db=app.config['MYSQL_DB'],
+                cursorclass=pymysql.cursors.DictCursor,
+                autocommit=True,
+                connect_timeout=30
+            )
+            with conn.cursor() as cursor:
+                cursor.execute("SET time_zone = '+05:30'")
+            return conn
+        except Exception as e:
+            print(f"❌ Database connection attempt {attempt + 1} failed: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2)  # Wait 2 seconds before retry
+            else:
+                print(f"❌ All {max_retries} connection attempts failed")
+                return None
 
 
 # SHA256 password hashing functions
